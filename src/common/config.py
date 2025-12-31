@@ -61,5 +61,36 @@ class Settings:
     @property
     def DB_PASSWORD(self):
         return os.getenv("POSTGRES_PASSWORD")
+    
+    @property
+    def MINIO_ENDPOINT(self):
+        return os.getenv("MINIO_ENDPOINT", "http://localhost:9000")
+
+    @property
+    def MINIO_ACCESS_KEY(self):
+        # SỬA LẠI THÀNH 'admin'
+        return os.getenv("MINIO_ACCESS_KEY", "admin") 
+
+    @property
+    def MINIO_SECRET_KEY(self):
+        # SỬA LẠI THÀNH 'password'
+        return os.getenv("MINIO_SECRET_KEY", "password")    
+
+    @property
+    def MINIO_BUCKET(self):
+        return os.getenv("MINIO_BUCKET", "datalake")
+
+    @property
+    def STORAGE_OPTIONS(self):
+        """
+        Đây là biến quan trọng nhất để Pandas kết nối được MinIO. 
+        """
+        return {
+            "key": self.MINIO_ACCESS_KEY,
+            "secret": self.MINIO_SECRET_KEY,
+            "client_kwargs": {
+                "endpoint_url": self.MINIO_ENDPOINT
+            }
+        }
 
 settings = Settings()

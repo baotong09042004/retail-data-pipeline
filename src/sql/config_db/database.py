@@ -6,8 +6,7 @@ from src.common.logger import setup_logger, get_logger
 setup_logger()
 logger = get_logger(__name__)
 
-def read_sql_file(filename):
-    sql_path = Path(__file__).resolve().parent / filename
+def read_sql_file(sql_path):
     
     if not sql_path.exists():
         logger.error(f"Không tìm thấy file SQL: {sql_path}")
@@ -22,7 +21,8 @@ if __name__ == "__main__":
     db = PostgresDB()
     
     try:
-        sql_query = read_sql_file("db_schema.sql")
+        sql_path = Path(__file__).resolve().parent / "db_schema.sql"
+        sql_query = read_sql_file(sql_path)
         logger.info("Bắt đầu khởi tạo cấu trúc bảng...")
         
         with db.get_connection() as cursor:
