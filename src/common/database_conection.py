@@ -1,10 +1,6 @@
 import psycopg2
 from contextlib import contextmanager
-from src.common.logger import setup_logger, get_logger
 from src.common.config import settings
-
-setup_logger()
-logger = get_logger(__name__)
 
 class PostgresDB:
 

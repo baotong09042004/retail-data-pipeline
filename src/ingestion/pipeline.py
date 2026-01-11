@@ -37,15 +37,11 @@ def run_ingestion_pipeline():
         
         # Vòng lặp: Có cục data nào -> Bắn luôn cục đó
         for i, chunk in enumerate(data_stream):
-            
-            # Transform nhẹ 
-            chunk['ingested_at'] = datetime.now()
-            
+                        
             # Tạo đường dẫn file đích
             file_s3_path = f"{base_s3_path}/part_{i}.parquet"
             logger.info(f"   -> Streaming chunk {i} to: {file_s3_path}")
             
-            # Gọi Loader 
             upload_direct_to_minio(chunk, file_s3_path)
 
         logger.info(f"Xong bảng: {table}")
