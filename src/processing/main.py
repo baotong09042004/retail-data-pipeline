@@ -1,5 +1,5 @@
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 # Setup đường dẫn
@@ -62,7 +62,7 @@ def run_etl_job(spark, duck_client, source_table, dw_table, execution_date=None)
     
     raw_path = get_raw_s3_path(source_table, execution_date)
     staging_spark, staging_duckdb = get_processed_s3_path(dw_table, execution_date)    
-    
+
     try:
         logger.info(f"START JOB: {source_table} -> {dw_table}")
         
@@ -117,7 +117,7 @@ if __name__ == "__main__":
     
     duck_db = DuckDB()
 
-    run_date = datetime(2026, 1, 9) 
+    run_date = datetime.now() - timedelta(days=1)
 
     jobs = [
         ("stores", "dim_stores"),

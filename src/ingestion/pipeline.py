@@ -6,23 +6,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(BASE_DIR))
 
 from src.common.logger import get_logger, setup_logger
-from config_full_load import EXTRACTION_CONFIG
+from src.ingestion.extraction_config import get_full_load_config
 from src.ingestion.extractors.postgres import stream_postgres_data
 from src.ingestion.loaders.minio import upload_direct_to_minio
 
 setup_logger()
 logger = get_logger(__name__)
 
-def generate_s3_path(base_path, mode):
+def generate_s3_path(base_path, date_partition):
     """Sinh đường dẫn partition theo ngày"""
-    today = datetime.now()
     return (
         f"{base_path}/"
-        f"load_type={mode}/"
-        f"year={today.year}/month={today.month}/day={today.day}"
+        f"year={date_partition.year}/month={date_partition.month}/day={date_partition.day}"
     )
 
-def run_ingestion_pipeline():
+def run_ingestion_pipeline(run_date, EXTRACTION_CONFIG):
+    """
+    Chạy pipeline ingestion từ Postgres -> MinIO.
+        Args:
+            run_date  -- Ngày chạy pipeline (dùng để tạo partition) 
+            EXTRACTION_CONFIG  -- Cấu hình extraction 
+    """
     logger.info("BẮT ĐẦU INGESTION")
 
     for config in EXTRACTION_CONFIG:
@@ -30,7 +34,7 @@ def run_ingestion_pipeline():
         logger.info(f"Processing: {table}")
         
         # Chuẩn bị đường dẫn đích (MinIO)
-        base_s3_path = generate_s3_path(config['output_base'], config['extract_mode'])
+        base_s3_path = generate_s3_path(config['output_base'], run_date)
         
         # Gọi Extractor
         data_stream = stream_postgres_data(config['query'])
@@ -49,4 +53,6 @@ def run_ingestion_pipeline():
     logger.info("KẾT THÚC INGESTION.")
 
 if __name__ == "__main__":
-    run_ingestion_pipeline()
+    extraction_config = get_full_load_config()
+    run_date = datetime.now().date()
+    run_ingestion_pipeline(run_date, extraction_config)

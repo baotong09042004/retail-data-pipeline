@@ -46,11 +46,15 @@ INGESTION_MAPPING = [
 def ingest_safe_deduplicate(cur, table, file_path, pk_cols):
     """
     Hàm load dữ liệu.
-    Quy trình: 
     1. Tạo bảng tạm rỗng (Không ràng buộc).
     2. Đổ CSV vào bảng tạm.
-    3. Lọc dòng trùng và Insert vào bảng thật 
-    """
+    3. Lọc dòng trùng và Insert vào bảng thật.
+    Args:
+        cur: con trỏ kết nối DB
+        table (str): tên bảng đích
+        file_path (str): đường dẫn file CSV
+        pk_cols (list): danh sách cột khóa chính
+"""
     temp_table = f"{table}_staging_temp"
     
     pk_str = ",".join(pk_cols)

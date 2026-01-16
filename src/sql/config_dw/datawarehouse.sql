@@ -37,7 +37,6 @@ CREATE TABLE dim_products (
     create_date DATE,
     update_date DATE,
     is_active BOOLEAN
-   
 );
 
 CREATE TABLE dim_customers (
@@ -49,6 +48,8 @@ CREATE TABLE dim_customers (
     country VARCHAR(100),
     gender CHAR(1),
     date_of_birth DATE,
+    create_date DATE,
+    update_date DATE,
 );
 
 -- 5. Dimension Employees
@@ -78,7 +79,7 @@ CREATE TABLE fact_sales (
     
     cost_amount DECIMAL(12, 2),     -- = dim_products.production_cost * quantity
     profit_amount DECIMAL(12, 2),   -- = line_total - (production_cost * quantity)
-    date TIMESTAMP,                -- Thời gian giao dịch
+    transaction_time TIMESTAMP,              
 
     line_id INT,                   
     date_id INT,                    
